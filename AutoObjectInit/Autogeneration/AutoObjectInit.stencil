@@ -1,0 +1,19 @@
+
+import Foundation
+import CoreData
+
+{% for domainModel in types.implementing.AutoObjectInit|struct where domainModel.accessLevel == "public" %}
+    {% for cdObjectType in domainModel.allVariables where cdObjectType.name == "cdObject" %}
+        {% for cdObject in types.all|class where cdObject.name == cdObjectType.typeName|replace:".Type","" %}
+public extension {{ domainModel.name }} {
+    public static func new(cdObject: {{ cdObject.name }}) -> {{ domainModel.name }} {
+        return {{ domainModel.name }}.new(
+            {% for domainProperty in domainModel.variables where not domainProperty.isComputed %}
+            {{ domainProperty.name }}: {% if domainProperty.type|struct %}{{ domainProperty.type.name }}.new(cdObject: {% endif %}{% if domainProperty.typeName|replace:"Int","Int" == "Int" %}Int({% endif %}{% if domainProperty.typeName|replace:"URL?","URL?" == "URL?" %}URL(string: {% endif %}{% if domainProperty.type.kind == "enum" %}{{ domainProperty.type.name }}(rawValue: {% endif %}{% for cdProperty in cdObject.allVariables where cdProperty.name == domainProperty.name %}cdObject.{{cdProperty.name}}{% if cdProperty.typeName|replace:"NSDate","NSDate" == "NSDate" %} as Date{% endif %}{% if cdProperty.typeName|replace:"NSDate?","NSDate?" == "NSDate?" %} as Date?{% endif %}{% ifnot domainProperty.isOptional %}{% if domainProperty.isArray %}?.allObjects as? {{ domainProperty.typeName }}{% endif %}{% if cdProperty.isOptional %}{% ifnot domainProperty.type|struct %} ?? .new(){% endif %}{% endif %}{% endif %}{% if domainProperty.typeName|replace:"Int","Int" == "Int" %}){% endif %}{% if domainProperty.typeName|replace:"URL?","URL?" == "URL?" %} ?? ""){% endif %}{% empty %}{% if domainProperty.isOptional %}nil{% endif %}{% ifnot domainProperty.isOptional %}.new(){% endif %}{% endfor %}{% if domainProperty.type|struct %}!){% endif %}{% if domainProperty.type.kind == "enum" %})!{% endif %}{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        )
+    }
+}
+        {% endfor %}
+    {% endfor %}
+{% endfor %}

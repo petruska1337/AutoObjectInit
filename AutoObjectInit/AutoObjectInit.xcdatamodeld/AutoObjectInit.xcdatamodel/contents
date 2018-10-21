@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14315.18" systemVersion="17G65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CDDog" representedClassName="CDDog" syncable="YES">
+        <attribute name="age" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="birthday" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="firstName" attributeType="String" syncable="YES"/>
+        <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="photo" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="favoriteToy" maxCount="1" deletionRule="Cascade" destinationEntity="CDToy" inverseName="dog" inverseEntity="CDToy" syncable="YES"/>
+        <relationship name="toys" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CDToy" inverseName="dogs" inverseEntity="CDToy" syncable="YES"/>
+    </entity>
+    <entity name="CDToy" representedClassName="CDToy" syncable="YES">
+        <attribute name="isNew" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="type" attributeType="String" syncable="YES"/>
+        <relationship name="dog" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="CDDog" inverseName="favoriteToy" inverseEntity="CDDog" syncable="YES"/>
+        <relationship name="dogs" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CDDog" inverseName="toys" inverseEntity="CDDog" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="CDDog" positionX="112.47265625" positionY="122.26171875" width="128" height="150"/>
+        <element name="CDToy" positionX="-95.9296875" positionY="162.54296875" width="128" height="120"/>
+    </elements>
+</model>
